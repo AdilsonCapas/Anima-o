@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class MovementPlayer : MonoBehaviour
 {
@@ -37,4 +38,15 @@ public class MovementPlayer : MonoBehaviour
         rb.MoveRotation(rotacao * rb.rotation);
     }
 
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("Porta"))
+        {
+            SceneManager.LoadScene("Castelo");
+        }
+        if (other.CompareTag("Escada"))
+        {
+            SceneManager.LoadScene("Game1");
+        }
+    }
 }

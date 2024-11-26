@@ -4,8 +4,10 @@
 TagManager:
   serializedVersion: 3
   tags:
-  - "Ch\xE3o"
   - Chao
+  - Escada
+  - Porta
+  - Agua
   layers:
   - Default
   - TransparentFX
@@ -13,7 +15,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - player
   - 
   - 
   - 
