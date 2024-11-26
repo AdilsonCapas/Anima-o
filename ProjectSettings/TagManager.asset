@@ -8,6 +8,7 @@ TagManager:
   - Escada
   - Porta
   - Agua
+  - VoltarCity
   layers:
   - Default
   - TransparentFX

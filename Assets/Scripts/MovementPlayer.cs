@@ -7,11 +7,13 @@ public class MovementPlayer : MonoBehaviour
     [SerializeField] private float velocidade = 5.0f;
     [SerializeField] private float forcaPulo = 5.0f;
     private Vector3 anguloRotacao = new Vector3(0,90,0);
+    private Scene cenaAtual;
     
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        Scene cenaAtual = SceneManager.GetActiveScene();
     }
 
     //Andar
@@ -47,6 +49,10 @@ public class MovementPlayer : MonoBehaviour
         if (other.CompareTag("Escada"))
         {
             SceneManager.LoadScene("Game1");
+        }
+        if (other.CompareTag("VoltarCity"))
+        {
+            SceneManager.LoadScene("Mapa");
         }
     }
 }
