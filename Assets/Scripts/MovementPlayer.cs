@@ -1,3 +1,5 @@
+using Unity.Cinemachine;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -6,14 +8,32 @@ public class MovementPlayer : MonoBehaviour
     private Rigidbody rb;
     [SerializeField] private float velocidade = 5.0f;
     [SerializeField] private float forcaPulo = 5.0f;
+    [SerializeField] private GameObject particulasMorte;
+     [SerializeField] private float tempoAntesDestruir = 2.0f;
     private Vector3 anguloRotacao = new Vector3(0,90,0);
     private Scene cenaAtual;
-    
+    public int Chave = 0;
+    private bool estaVivo = false;
+    private Animator animator;
+    public Transform morte;
+    public GameObject jogador;
+
 
     void Start()
     {
+        
         rb = GetComponent<Rigidbody>();
         Scene cenaAtual = SceneManager.GetActiveScene();
+        animator = GetComponent<Animator>();
+    }
+
+    void Update()
+    {
+        if (estaVivo) return; // Se estiver morto, desabilitar controles
+
+        // Lógica de movimento e pulo
+        Andar();
+        if (Input.GetKeyDown(KeyCode.Space)) Pular();
     }
 
     //Andar
@@ -40,13 +60,35 @@ public class MovementPlayer : MonoBehaviour
         rb.MoveRotation(rotacao * rb.rotation);
     }
 
+    
+
+    public void Morrer()
+    {
+        if (estaVivo) return; // Evitar múltiplas mortes
+
+        estaVivo = true;
+        animator.SetBool("EstaVivo", false); 
+        rb.linearVelocity = Vector3.zero;      
+        rb.isKinematic = true;
+
+        Invoke("MostrarParticulas", 3.0f);
+
+        Invoke("DestruirJogador", 3.1f);
+
+        Invoke("ReiniciarFase", 5.0f);
+    }
+        void ReiniciarFase()
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
     public void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Porta"))
         {
+            GameStateManager.origemTransicao = "Porta";
             SceneManager.LoadScene("Castelo");
         }
-        if (other.CompareTag("Escada"))
+        if (other.CompareTag("Espinho"))
         {
             SceneManager.LoadScene("Game1");
         }
@@ -54,5 +96,46 @@ public class MovementPlayer : MonoBehaviour
         {
             SceneManager.LoadScene("Mapa");
         }
+        if(other.CompareTag("Lab"))
+        {
+            SceneManager.LoadScene("labirinto");
+        }
+        if (other.CompareTag("Chave1"))
+        {
+            Chave ++;
+            Destroy(other.gameObject);
+            GameStateManager.origemTransicao = "Chave1";
+            SceneManager.LoadScene("Castelo");
+        }
+
     }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        // Verifica se o objeto colidido possui uma tag específica
+        if (other.gameObject.CompareTag("Espinhos"))
+        {
+            Destroy(other.gameObject); // Destroi o objeto colidido
+            Morrer();
+        }
+    }
+
+     private void DestruirJogador()
+    {
+         jogador.SetActive(false);
+    }
+
+    void MostrarParticulas()
+    {
+        Instantiate(particulasMorte, transform.position, Quaternion.identity);
+    }
+
+    public void Final()
+    {
+        if(Chave == 2)
+        {
+            SceneManager.LoadScene("Acabou");
+        }
+    }
+    
 }

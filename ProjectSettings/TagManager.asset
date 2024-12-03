@@ -9,6 +9,10 @@ TagManager:
   - Porta
   - Agua
   - VoltarCity
+  - Espinho
+  - Chave1
+  - Espinhos
+  - Lab
   layers:
   - Default
   - TransparentFX
